@@ -22,9 +22,6 @@
             android:name=".activities.MainActivity4"
             android:exported="false" />
         <activity
-            android:name=".activities.MainActivity4"
-            android:exported="false" />
-        <activity
             android:name=".activities.MainActivity3"
             android:exported="false" />
         <activity
