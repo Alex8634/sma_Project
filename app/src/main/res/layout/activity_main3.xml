@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity3">
+    tools:context=".activities.MainActivity3">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,13 +70,33 @@
                 android:text="Preferences" />
         </LinearLayout>
 
-        <TextView
-            android:layout_marginTop="70dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Configure your time schedule!"
-            android:textSize="16sp"
-            android:layout_gravity="center_horizontal" />
+        <FrameLayout
+            android:id="@+id/config"
+            android:layout_marginTop="30dp"
+            android:layout_width="400dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal">
+
+            <ImageView
+                android:layout_marginTop="10dp"
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="16dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img2"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage your Alarms!"
+                android:textSize="16sp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:background="@android:color/transparent" />
+        </FrameLayout>
 
     </LinearLayout>
 

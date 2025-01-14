@@ -1,15 +1,9 @@
-package com.example.smamysuperalarm
+package com.example.smamysuperalarm.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View.OnClickListener
-import android.widget.Button
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.smamysuperalarm.databinding.ActivityMain2Binding
-import com.example.smamysuperalarm.databinding.ActivityMainBinding
 
 class MainActivity2 : AppCompatActivity() {
     private lateinit var binding2: ActivityMain2Binding

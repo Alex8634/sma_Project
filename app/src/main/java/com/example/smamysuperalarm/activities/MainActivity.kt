@@ -1,16 +1,11 @@
-package com.example.smamysuperalarm
+package com.example.smamysuperalarm.activities
 
-import android.Manifest
 //import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import androidx.activity.enableEdgeToEdge
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.smamysuperalarm.databinding.ActivityMainBinding
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -23,13 +18,21 @@ class MainActivity : AppCompatActivity() {
         //dialog.setContentView(sheetLayoutBinding.root)
         setContentView(binding.root)
 
-       //enableEdgeToEdge()
-        //setContentView(R.layout.activity_main)
-
-
+       //enableEdgeToEdge() 
+        // setContentView(R.layout.activity_main)
         binding.button1.setOnClickListener {
-            val intent = Intent(this, MainActivity2::class.java)
-            startActivity(intent)
+
+            val username = binding.nameInput.text.toString().trim()
+            val age = binding.ageInput.text.toString().trim()
+            val programme = binding.workTypeInput.text.toString().trim()
+            if (username.isNotEmpty() && age.isNotEmpty() && programme.isNotEmpty()) {
+                val intent = Intent(this, MainActivity2::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Please enter your username", Toast.LENGTH_SHORT).show()
+            }
+
         }
+
     }
 }

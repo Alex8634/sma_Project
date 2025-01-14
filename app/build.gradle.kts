@@ -35,16 +35,21 @@ android {
     }
     buildFeatures {
         viewBinding = true
+       // compose = true
     }
+
 }
 
 dependencies {
 
+    //implementation("androidx.activity:activity-compose:1.9.3")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.room.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
