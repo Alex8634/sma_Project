@@ -14,11 +14,11 @@
         android:padding="16dp">
 
         <TextView
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="70dp"
             android:id="@+id/greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello, Alexandru!"
+            android:text="Hello, Alex!"
             android:textSize="18sp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp" />
@@ -61,17 +61,17 @@
             android:id="@+id/config"
             android:layout_marginTop="30dp"
             android:layout_width="400dp"
-            android:layout_height="60dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal">
 
             <ImageView
+                android:layout_width="339dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
-                android:layout_width="300dp"
-                android:layout_height="40dp"
                 android:layout_marginBottom="16dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/img2"
-                android:layout_gravity="center_horizontal"/>
+                android:src="@drawable/img2" />
 
             <TextView
                 android:layout_marginTop="20dp"

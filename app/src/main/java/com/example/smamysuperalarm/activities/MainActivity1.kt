@@ -24,11 +24,11 @@ class MainActivity1 : AppCompatActivity() {
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val hasSeenWelcome = prefs.getBoolean("hasSeenWelcome", false)
 
-        if (hasSeenWelcome) {
+        /*if (hasSeenWelcome) {
             startActivity(Intent(this, MainActivity2::class.java))
             finish()
             return
-        }
+        }*/
 
         setContentView(R.layout.activity_main1)
 

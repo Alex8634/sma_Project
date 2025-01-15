@@ -50,10 +50,18 @@ class MainActivity6 : AppCompatActivity() {
             finish()
         }
 
-       binding6.back6.setOnClickListener {
+
+        val backButton: Button = findViewById(R.id.back6)
+        backButton.setOnClickListener {
+            // Navigate to MainActivity
             val intent = Intent(this, MainActivity3::class.java)
             startActivity(intent)
+            finish()
         }
+       /*binding6.back6.setOnClickListener {
+            val intent = Intent(this, MainActivity3::class.java)
+            startActivity(intent)
+        }*/
 
         val continueButtonSalarm: Button = findViewById(R.id.add_Salarm)
         continueButtonSalarm.setOnClickListener {

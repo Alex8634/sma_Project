@@ -33,25 +33,16 @@ class MainActivity : AppCompatActivity() {
         setAlarmButton = findViewById(R.id.set_alarm_button)
         stopAlarmButton = findViewById(R.id.stop_alarm_button)
 
-
+    // functions called g=here:
         setAlarmButton.setOnClickListener {
             showTimePickerDialog()
         }
-
-
         stopAlarmButton.setOnClickListener {
             AlarmReceiver.ringtone?.stop()
         }
-        /*stopAlarmButton.setOnClickListener {
-            // Example: Setting the alarm to go off 10 seconds from now
-            AlarmReceiver.ringtone?.stop()
-        }*/
-
         setAlarmButton.setOnClickListener {
             showTimePickerDialog()
         }
-
-
         stopAlarmButton.setOnClickListener {
             AlarmReceiver.ringtone?.stop()
         }
@@ -92,9 +83,6 @@ class MainActivity : AppCompatActivity() {
         timePickerDialog.show()
     }
 
-    /**
-     * Schedules the alarm at the given triggerTimeMillis (in the future).
-     */
     private fun scheduleAlarm(triggerTimeMillis: Long) {
         val intent = Intent(this, AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(

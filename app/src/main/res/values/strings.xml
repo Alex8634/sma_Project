@@ -16,7 +16,7 @@
         <item>NO</item>
     </string-array>
     <string-array name="sleep_hours_spinner">
-        <item>MORE THATN 8H</item>
-        <item>LESS THATN 8H</item>
+        <item>MORE THAN 8H</item>
+        <item>LESS THAN 8H</item>
     </string-array>
 </resources>
