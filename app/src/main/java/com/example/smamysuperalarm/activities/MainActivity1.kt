@@ -23,7 +23,7 @@ class MainActivity1 : AppCompatActivity() {
 
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val hasSeenWelcome = prefs.getBoolean("hasSeenWelcome", false)
-
+        //nu arata pagina 1 daca a fost vizitata deja
         /*if (hasSeenWelcome) {
             startActivity(Intent(this, MainActivity2::class.java))
             finish()

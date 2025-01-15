@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi
 import com.example.smamysuperalarm.R
 import com.example.smamysuperalarm.service.AlarmReceiver
 import java.util.Calendar
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         setAlarmButton = findViewById(R.id.set_alarm_button)
         stopAlarmButton = findViewById(R.id.stop_alarm_button)
 
-    // functions called g=here:
+    // functions caleled here
         setAlarmButton.setOnClickListener {
             showTimePickerDialog()
         }
@@ -44,16 +45,15 @@ class MainActivity : AppCompatActivity() {
             showTimePickerDialog()
         }
         stopAlarmButton.setOnClickListener {
-            AlarmReceiver.ringtone?.stop()
+            AlarmReceiver.ringtone?.stop() //nu ii place fara? fiindca e de tipul Ringtone? = null
         }
     }
     private fun showTimePickerDialog() {
-        // Initialize a Calendar to the current time
         val calendar = Calendar.getInstance()
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
 
-        // Create a TimePickerDialog
+
         val timePickerDialog = TimePickerDialog(
             this,
             { _, hourOfDay, minute ->
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
                 scheduleAlarm(calendar.timeInMillis)
 
-                val chosenTime = String.format("%02d:%02d", hourOfDay, minute)
+                val chosenTime = String.format(Locale.US,"%02d:%02d", hourOfDay, minute)
                 Toast.makeText(this, "Alarm set for $chosenTime", Toast.LENGTH_SHORT).show()
             },
             currentHour,
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                 triggerTimeMillis,
                 pendingIntent
             )
-        } else {
+        } else {//aici mi-a dat de furca Alarm Managerul
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
                 triggerTimeMillis,

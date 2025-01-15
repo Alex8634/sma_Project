@@ -18,7 +18,7 @@ import com.example.smamysuperalarm.databinding.ActivityMain4Binding
 import com.example.smamysuperalarm.service.AlarmReceiver
 import java.util.Calendar
 
-
+// main4 and main more or less the same
 class MainActivity4 : AppCompatActivity() {
 
     private lateinit var binding4: ActivityMain4Binding
