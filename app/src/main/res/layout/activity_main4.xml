@@ -75,20 +75,9 @@
             android:id="@+id/snooze_time_spinner"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="40dp" />
+            android:layout_marginBottom="40dp"
+            android:entries="@array/spinner1"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Time between snoozes"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
-
-        <Spinner
-            android:id="@+id/time_between_snoozes_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="48dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -101,16 +90,27 @@
             android:id="@+id/last_line_of_defense_spinner"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="32dp" />
+            android:layout_marginBottom="32dp"
+            android:entries="@array/spinner3"/>
 
         <Button
-            android:id="@+id/deploy_button"
+            android:id="@+id/deployS_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Deploy it!"
             android:background="@color/black"
-            android:textColor="@color/white"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:text="Deploy it!"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/cancelS_button"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:padding="12dp"
+            android:text="Cancel it!"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 

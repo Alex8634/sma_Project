@@ -67,51 +67,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add additional details"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="30dp">
-
-            <ToggleButton
-                android:id="@+id/alarm_toggle_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOn="On"
-                android:textOff="Off" />
-
-            <TextView
-                android:id="@+id/alarm_description_1"
-                android:layout_width="175dp"
-                android:layout_height="65dp"
-                android:text="Basic Alarm\n8:00\nSnooze type: Until I turn it off"
-                android:layout_marginStart="16dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="30dp">
-
-            <ToggleButton
-                android:id="@+id/alarm_toggle_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOn="On"
-                android:textOff="Off" />
-
-            <TextView
-                android:id="@+id/alarm_description_2"
-                android:layout_width="175dp"
-                android:layout_height="65dp"
-                android:text="Basic Alarm\n10:00\nSnooze type: Don’t"
-                android:layout_marginStart="16dp" />
-        </LinearLayout>
+            android:text="Choose your alarm type"
+            android:textSize="26sp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="50dp"/>
 
         <Button
             android:layout_marginTop="250dp"

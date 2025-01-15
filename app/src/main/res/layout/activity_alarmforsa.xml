@@ -6,14 +6,14 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
+    tools:context="activities.MainActivity">
 
     <!-- A simple TextView for title or instructions -->
     <TextView
         android:id="@+id/alarm_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Alarm"
+        android:text="SuperAlarm"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/set_alarm_button"

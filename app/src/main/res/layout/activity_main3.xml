@@ -18,7 +18,7 @@
             android:id="@+id/greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello, userName!"
+            android:text="Hello, Alexandru!"
             android:textSize="18sp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp" />
@@ -49,19 +49,6 @@
             android:gravity="center"
             android:layout_marginBottom="16dp">
 
-            <Button
-                android:id="@+id/stats_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stats" />
-
-            <Button
-                android:id="@+id/history_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="History"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp" />
 
             <Button
                 android:id="@+id/preferences_button"

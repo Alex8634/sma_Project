@@ -1,3 +1,22 @@
 <resources>
-    <string name="app_name">SmaMySuperAlarm</string>
+    <string-array name="spinner1">
+        <item>Until I turn it off</item>
+    </string-array>
+    <string-array name="spinner2">
+        <item>Item 1</item>
+    </string-array>
+    <string-array name="spinner3">
+        <item>Password</item>
+    </string-array>
+    <string-array name="spinner4">
+        <item>P</item>
+    </string-array>
+    <string-array name="weekly_activities_spinner">
+        <item>YES</item>
+        <item>NO</item>
+    </string-array>
+    <string-array name="sleep_hours_spinner">
+        <item>MORE THATN 8H</item>
+        <item>LESS THATN 8H</item>
+    </string-array>
 </resources>
