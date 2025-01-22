@@ -33,7 +33,7 @@
             android:layout_marginBottom="16dp" />
 
         <EditText
-            android:id="@+id/name_input"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:autofillHints=""
@@ -42,7 +42,7 @@
             android:inputType="textPersonName" />
 
         <EditText
-            android:id="@+id/age_input"
+            android:id="@+id/age"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:hint="Age"
@@ -50,7 +50,7 @@
             android:inputType="number" />
 
         <EditText
-            android:id="@+id/work_type_input"
+            android:id="@+id/code"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:hint="Code"

@@ -3,8 +3,10 @@ package com.example.smamysuperalarm.activities
 //import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smamysuperalarm.R
@@ -12,14 +14,21 @@ import com.example.smamysuperalarm.databinding.ActivityMain1Binding
 
 class MainActivity1 : AppCompatActivity() {
     private lateinit var binding: ActivityMain1Binding
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMain1Binding.inflate(layoutInflater)
+        setContentView(R.layout.activity_main1)
+        //binding = ActivityMain1Binding.inflate(layoutInflater)
         //sheetLayoutBinding = BottomSheetLayoutBinding.inflate(layoutInflater)
         //dialog = BottomSheetDialog(this, R.style.BottomSheetTheme)
         //dialog.setContentView(sheetLayoutBinding.root)
-        setContentView(binding.root)
+        //setContentView(binding.root)
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+
+        val editTextUsername = findViewById<EditText>(R.id.name)
+        val editTextPassword = findViewById<EditText>(R.id.code)
+        val buttonLogin = findViewById<Button>(R.id.button1)
 
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val hasSeenWelcome = prefs.getBoolean("hasSeenWelcome", false)
@@ -41,13 +50,13 @@ class MainActivity1 : AppCompatActivity() {
         }
         //enableEdgeToEdge()
         // setContentView(R.layout.activity_main)
-        binding.button1.setOnClickListener {
+        buttonLogin.setOnClickListener {
 
-            val username = binding.nameInput.text.toString().trim()
-            val age = binding.ageInput.text.toString().trim()
-            val programme = binding.workTypeInput.text.toString().trim()
+            val username = binding.name.text.toString().trim()
+            val age = binding.age.text.toString().trim()
+            val programme = binding.code.text.toString().trim()
             if (username.isNotEmpty() && age.isNotEmpty() && programme.isNotEmpty()) {
-                val intent = Intent(this, MainActivity2::class.java)
+                val intent = Intent(this, MainActivity3::class.java)
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Please enter your username", Toast.LENGTH_SHORT).show()

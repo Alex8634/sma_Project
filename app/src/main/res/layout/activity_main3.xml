@@ -15,10 +15,10 @@
 
         <TextView
             android:layout_marginTop="70dp"
-            android:id="@+id/greeting"
+            android:id="@+id/wellhellothere"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello, Alex!"
+            android:text="Hello username!"
             android:textSize="18sp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp" />
