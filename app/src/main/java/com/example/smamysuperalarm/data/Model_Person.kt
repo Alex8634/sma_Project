@@ -1,14 +1,14 @@
-package com.example.smamysuperalarm.model;
+package com.example.smamysuperalarm.data;
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity()
+@Entity(tableName = "person_table")
 data class Model_Person(
     @PrimaryKey(autoGenerate = false)
 
     val nume: String,
+    val code: String
 
 )
 
