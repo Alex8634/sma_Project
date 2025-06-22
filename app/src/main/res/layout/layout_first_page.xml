@@ -33,10 +33,10 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/age_input"
+        android:id="@+id/sleep_hours_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Age"
+        android:hint="Default sleep schedule (hours)"
         android:layout_marginBottom="16dp"
         android:inputType="number" />
 

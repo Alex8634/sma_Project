@@ -1,6 +1,10 @@
 <resources>
     <string-array name="spinner1">
         <item>Until I turn it off</item>
+        <item>2 min</item>
+        <item>4 min</item>
+        <item>6 min</item>
+        <item>8 min</item>
     </string-array>
     <string-array name="spinner2">
         <item>Item 1</item>
@@ -11,12 +15,10 @@
     <string-array name="spinner4">
         <item>P</item>
     </string-array>
-    <string-array name="weekly_activities_spinner">
-        <item>YES</item>
-        <item>NO</item>
-    </string-array>
     <string-array name="sleep_hours_spinner">
-        <item>MORE THAN 8H</item>
-        <item>LESS THAN 8H</item>
+        <item>8H</item>
+        <item>7H</item>
+        <item>6.5H</item>
     </string-array>
+    <string name="hello_alex">Hello, Alex!</string>
 </resources>

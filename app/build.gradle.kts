@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     // Kotlin serialization plugin for type safe routes and navigation arguments
     kotlin("plugin.serialization") version "2.0.21"
+    // Add kapt plugin for Room
+    id("kotlin-kapt")
 }
 
 android {
@@ -59,6 +61,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // Room dependencies
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 }
 
 

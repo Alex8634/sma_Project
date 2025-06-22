@@ -18,7 +18,7 @@
             android:id="@+id/screen_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time Schedule"
+            android:text="Preferences"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"
@@ -29,26 +29,25 @@
             android:layout_height="wrap_content"
             android:text="Current Alarms:2"
             android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="50dp" />
 
         <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Is your weekend free?"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
-
-        <Spinner
-            android:id="@+id/weekly_activities_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="48dp"
-            android:entries="@array/weekly_activities_spinner"/>
+            android:id="@+id/change_pin_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change your PIN"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="50dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Choose how many hours do you want to sleep"
+            android:text="Choose how many hours do you want to sleep by default:"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
 

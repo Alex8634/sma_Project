@@ -18,7 +18,7 @@
             android:id="@+id/greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello, Alex!"
+            android:text="@string/hello_alex"
             android:textSize="18sp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp" />

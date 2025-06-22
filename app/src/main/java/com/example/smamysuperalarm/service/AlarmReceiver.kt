@@ -3,31 +3,76 @@ package com.example.smamysuperalarm.service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import android.widget.Toast
+import android.media.AudioAttributes
 import android.media.Ringtone
 import android.media.RingtoneManager
-import android.net.Uri // ne folosim de tipul URI ca sa obtinem fisierele de tip sunet pt alarma
+import android.net.Uri
+import android.os.Build
+import android.os.PowerManager
+import android.util.Log
+import android.widget.Toast
 
 class AlarmReceiver : BroadcastReceiver() {
     companion object {
-        var ringtone: Ringtone? = null
+        private var ringtone: Ringtone? = null
+        private var wakeLock: PowerManager.WakeLock? = null
+        private const val TAG = "AlarmReceiver"
+        
+        fun stopAlarm() {
+            try {
+                ringtone?.stop()
+                ringtone = null
+                wakeLock?.release()
+                wakeLock = null
+            } catch (e: Exception) {
+                Log.e(TAG, "Error stopping alarm: ${e.message}")
+            }
+        }
     }
+
     override fun onReceive(context: Context, intent: Intent) {
-        Toast.makeText(context, "Alarm went off!", Toast.LENGTH_SHORT).show()
+        try {
+            // Acquire wake lock to keep the alarm playing
+            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            wakeLock = powerManager.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "Alarmify::AlarmWakeLock"
+            ).apply {
+                acquire(10*60*1000L) // 10 minutes timeout
+            }
 
-        var alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM) //sunet de alarma
-        //var alarmUri = RingtoneManager.getDefaultUri(music1)
+            // Get the alarm sound
+            var alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         if (alarmUri == null) {
-
-            alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)// sunet de notificare
+                alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
 
+            // Create and configure the ringtone
         val ringtoneInstance = alarmUri?.let { RingtoneManager.getRingtone(context, it) }
         if (ringtoneInstance != null) {
-            ringtoneInstance.play() //canta
+                // Configure audio attributes for better reliability
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ringtoneInstance.audioAttributes = AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                }
+
+                // Set looping to true to ensure continuous playback
+                ringtoneInstance.isLooping = true
+                
+                // Start playing
+                ringtoneInstance.play()
             ringtone = ringtoneInstance
-        } else {//
+                
+                Log.d(TAG, "Alarm started successfully")
+            } else {
+                Log.e(TAG, "Failed to create ringtone instance")
+                Toast.makeText(context, "Failed to start alarm", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in alarm receiver: ${e.message}")
+            Toast.makeText(context, "Error starting alarm", Toast.LENGTH_SHORT).show()
         }
     }
 }

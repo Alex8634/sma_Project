@@ -9,6 +9,8 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -24,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     //private lateinit var pendingIntent: PendingIntent
     private lateinit var setAlarmButton: Button
     private lateinit var stopAlarmButton: Button
+    private var snoozeHandler: Handler? = null
+    private var snoozeRunnable: Runnable? = null
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,15 +43,59 @@ class MainActivity : AppCompatActivity() {
             showTimePickerDialog()
         }
         stopAlarmButton.setOnClickListener {
-            AlarmReceiver.ringtone?.stop()
-        }
-        setAlarmButton.setOnClickListener {
-            showTimePickerDialog()
-        }
-        stopAlarmButton.setOnClickListener {
-            AlarmReceiver.ringtone?.stop() //nu ii place fara? fiindca e de tipul Ringtone? = null
+            showAlarmOptionsDialog()
         }
     }
+
+    private fun showAlarmOptionsDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Alarm Options")
+
+        val options = arrayOf("Stop Alarm", "Snooze (2 min)")
+        
+        builder.setSingleChoiceItems(options, -1) { dialog, which ->
+            when (which) {
+                0 -> {
+                    dialog.dismiss()
+                    AlarmReceiver.stopAlarm()
+                }
+                1 -> {
+                    dialog.dismiss()
+                    snoozeAlarm()
+                }
+            }
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+
+        builder.show()
+    }
+
+    private fun snoozeAlarm() {
+        // Stop the current alarm
+        AlarmReceiver.stopAlarm()
+        
+        // Show snooze confirmation
+        Toast.makeText(this, "Alarm snoozed for 2 minutes", Toast.LENGTH_SHORT).show()
+        
+        // Cancel any existing snooze
+        snoozeHandler?.removeCallbacks(snoozeRunnable!!)
+        
+        // Create new snooze handler
+        snoozeHandler = Handler(Looper.getMainLooper())
+        snoozeRunnable = Runnable {
+            // Restart the alarm after 2 minutes
+            val intent = Intent(this, AlarmReceiver::class.java)
+            sendBroadcast(intent)
+            Toast.makeText(this, "Snooze time is up!", Toast.LENGTH_SHORT).show()
+        }
+        
+        // Schedule the snooze
+        snoozeHandler?.postDelayed(snoozeRunnable!!, 2 * 60 * 1000) // 2 minutes in milliseconds
+    }
+
     private fun showTimePickerDialog() {
         val calendar = Calendar.getInstance()
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -78,8 +126,6 @@ class MainActivity : AppCompatActivity() {
             currentMinute,
             true
         )
-
-
         timePickerDialog.show()
     }
 
