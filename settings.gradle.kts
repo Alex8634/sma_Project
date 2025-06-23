@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "SmaMySuperAlarm"
 include(":app")
- 
+include(":myapplication")

@@ -24,6 +24,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 ringtone = null
                 wakeLock?.release()
                 wakeLock = null
+                // Detach Firebase BPM listener
+                WearableListenerService.stopFirebaseBpmListener()
+                Log.d(TAG, "Alarm stopped")
             } catch (e: Exception) {
                 Log.e(TAG, "Error stopping alarm: ${e.message}")
             }
@@ -66,6 +69,15 @@ class AlarmReceiver : BroadcastReceiver() {
             ringtone = ringtoneInstance
                 
                 Log.d(TAG, "Alarm started successfully")
+                // Attach Firebase BPM listener if last line of defense is Wearable
+                val prefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                val lastLineOfDefense = prefs.getString("last_line_of_defense", "")
+                if (lastLineOfDefense == "Wearable") {
+                    Log.d(TAG, "Attaching Firebase BPM listener from AlarmReceiver")
+                    WearableListenerService.startFirebaseBpmListener("testuser", 100) {
+                        stopAlarm()
+                    }
+                }
             } else {
                 Log.e(TAG, "Failed to create ringtone instance")
                 Toast.makeText(context, "Failed to start alarm", Toast.LENGTH_SHORT).show()

@@ -2,9 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     // Kotlin serialization plugin for type safe routes and navigation arguments
-    kotlin("plugin.serialization") version "2.0.21"
-    // Add kapt plugin for Room
-    id("kotlin-kapt")
+    kotlin("plugin.serialization") version "1.9.10"
+    // Use KSP instead of kapt for Room
+    id("com.google.devtools.ksp") version "1.9.10-1.0.13"
 }
 
 android {
@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-
+    implementation ("com.google.android.gms:play-services-wearable:18.1.0")
     //implementation("androidx.activity:activity-compose:1.9.3")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -61,10 +61,15 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // Room dependencies
+    // Room dependencies with KSP
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+
+    implementation("com.google.firebase:firebase-database-ktx:21.0.0")
+    implementation("com.google.firebase:firebase-auth-ktx:22.0.0") // Optional
 }
+
+apply(plugin = "com.google.gms.google-services")
 
 

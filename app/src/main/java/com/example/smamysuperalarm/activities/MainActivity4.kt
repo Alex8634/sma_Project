@@ -6,10 +6,12 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
@@ -18,13 +20,20 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.smamysuperalarm.R
 import com.example.smamysuperalarm.databinding.ActivityMain4Binding
 import com.example.smamysuperalarm.service.AlarmReceiver
+import com.example.smamysuperalarm.service.WearableListenerService
 import java.util.Calendar
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.MessageClient.OnMessageReceivedListener
+import com.google.firebase.FirebaseApp
 
 // main4 and main more or less the same
-class MainActivity4 : AppCompatActivity() {
+class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
 
     private lateinit var binding4: ActivityMain4Binding
     private lateinit var alarmManager: AlarmManager
@@ -36,10 +45,13 @@ class MainActivity4 : AppCompatActivity() {
     private var snoozeRunnable: Runnable? = null
     private lateinit var snoozeTimeSpinner: Spinner
     private lateinit var enableDefaultSleepCheckbox: CheckBox
-
+    private lateinit var lastLineOfDefenseSpinner: Spinner
+    private var isFirebaseBpmListenerActive = false
+    private val userId = "testuser" // TODO: Replace with real user ID if available
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         binding4 = ActivityMain4Binding.inflate(layoutInflater)
         setContentView(R.layout.activity_main4)
         setContentView(binding4.root)
@@ -59,6 +71,7 @@ class MainActivity4 : AppCompatActivity() {
         stopAlarmButton = findViewById(R.id.cancelS_button)
         snoozeTimeSpinner = findViewById(R.id.snooze_time_spinner)
         enableDefaultSleepCheckbox = findViewById(R.id.enable_default_sleep_checkbox)
+        lastLineOfDefenseSpinner = findViewById(R.id.last_line_of_defense_spinner)
 
         // Set up the snooze time spinner
         val snoozeTimes = arrayOf("2", "4", "6", "8")
@@ -67,6 +80,29 @@ class MainActivity4 : AppCompatActivity() {
         snoozeTimeSpinner.adapter = adapter
 
         setAlarmButton.setOnClickListener {
+            // Check if wearable is selected in the spinner
+            val selectedDefense = lastLineOfDefenseSpinner.selectedItem.toString()
+            Log.d("FirebasePhone", "lastLineOfDefenseSpinner selected: $selectedDefense")
+            val isWearableEnabled = selectedDefense == "Wearable"
+            
+            // Start or stop wearable listener service
+            if (isWearableEnabled) {
+                WearableListenerService.startListening(this)
+                Toast.makeText(this, "Wearable monitoring enabled", Toast.LENGTH_SHORT).show()
+            } else {
+                WearableListenerService.stopListening(this)
+            }
+            
+            // Request body sensors permission if wearable is enabled
+            if (isWearableEnabled) {
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.BODY_SENSORS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.BODY_SENSORS), 100)
+                    Toast.makeText(this, "Body sensors permission needed for wearable functionality", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+            }
+            
             if (enableDefaultSleepCheckbox.isChecked) {
                 scheduleDefaultSleepAlarm()
             } else {
@@ -78,46 +114,141 @@ class MainActivity4 : AppCompatActivity() {
             showAlarmOptionsDialog()
         }
 
+        // Add test button for wearable communication
+        findViewById<Button>(R.id.test_wearable_button).setOnClickListener {
+            testWearableMessage()
+        }
+
+    }
+    override fun onStart() {
+        super.onStart()
+        Wearable.getMessageClient(this).addListener(this)
+    }
+
+    override fun onStop() {
+        Wearable.getMessageClient(this).removeListener(this)
+        super.onStop()
+    }
+
+    override fun onMessageReceived(messageEvent: MessageEvent) {
+        Log.d("WearDebug", "PRIMIT mesaj de la ceas")
+
+        if (messageEvent.path == "/heart_rate") {
+            val bpmStr = String(messageEvent.data, Charsets.UTF_8)
+            val bpm = bpmStr.toIntOrNull()
+            Log.d("WearDebug", "BPM extras: $bpm")
+
+            if (bpm != null && bpm > 100) {
+                runOnUiThread {
+                    Toast.makeText(this, "BPM > 100 – alarma se oprește!", Toast.LENGTH_LONG).show()
+                    AlarmReceiver.stopAlarm()
+                }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, 
+        permissions: Array<out String>, 
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        
+        if (requestCode == 100 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Body sensors permission granted", Toast.LENGTH_SHORT).show()
+            // Continue with alarm setup
+            if (enableDefaultSleepCheckbox.isChecked) {
+                scheduleDefaultSleepAlarm()
+            } else {
+                showTimePickerDialog()
+            }
+        } else {
+            Toast.makeText(this, "Body sensors permission denied. Wearable functionality disabled.", Toast.LENGTH_LONG).show()
+            WearableListenerService.stopListening(this)
+        }
+    }
+
+    // Test method to simulate receiving a heart rate message
+    fun testWearableMessage() {
+        val selectedDefense = lastLineOfDefenseSpinner.selectedItem.toString()
+        if (selectedDefense == "Wearable") {
+            // Simulate receiving a high BPM message
+            val testMessage = "105" // High BPM to trigger alarm stop
+            Log.d("MainActivity4", "Testing wearable message: $testMessage")
+            
+            // Create a mock message event
+            // Note: This is just for testing - in real scenario, the message comes from the watch
+            Toast.makeText(this, "Testing wearable message: $testMessage BPM", Toast.LENGTH_SHORT).show()
+            
+            // You can manually trigger the alarm stop for testing
+            //AlarmReceiver.stopAlarm()
+        } else {
+            Toast.makeText(this, "Please select 'Wearable' in the spinner first", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun scheduleDefaultSleepAlarm() {
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val defaultSleepHours = prefs.getInt("sleep_hours", 8) // Default to 8 hours if not set
-        
+        val selectedDefense = lastLineOfDefenseSpinner.selectedItem.toString()
+        Log.d("FirebasePhone", "lastLineOfDefenseSpinner selected: $selectedDefense")
+        // Save last line of defense to SharedPreferences
+        prefs.edit().putString("last_line_of_defense", selectedDefense).apply()
         // Calculate alarm time: current time + sleep hours
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.HOUR_OF_DAY, defaultSleepHours)
-        
         // Schedule the alarm
         scheduleAlarm(calendar.timeInMillis)
-        
         val alarmTime = String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
         Toast.makeText(this, "Alarm set for $alarmTime (${defaultSleepHours} hours from now)", Toast.LENGTH_SHORT).show()
+        // Start Firebase BPM listener if Wearable is selected
+        if (selectedDefense == "Wearable" && !isFirebaseBpmListenerActive) {
+            Log.d("FirebasePhone", "Starting Firebase BPM listener for userId=$userId")
+            Toast.makeText(this, "Starting Firebase BPM listener", Toast.LENGTH_SHORT).show()
+            try {
+                Log.d("FirebasePhone", "Calling startFirebaseBpmListener in MainActivity4")
+                WearableListenerService.startFirebaseBpmListener(userId, 100) {
+                    runOnUiThread {
+                        Toast.makeText(this, "BPM > 100 – alarma se oprește!", Toast.LENGTH_LONG).show()
+                        AlarmReceiver.stopAlarm()
+                        stopFirebaseBpmListenerIfActive()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("FirebasePhone", "Exception when starting Firebase BPM listener", e)
+            }
+            isFirebaseBpmListenerActive = true
+        }
+    }
+
+    private fun stopFirebaseBpmListenerIfActive() {
+        if (isFirebaseBpmListenerActive) {
+            WearableListenerService.stopFirebaseBpmListener()
+            isFirebaseBpmListenerActive = false
+        }
     }
 
     private fun showAlarmOptionsDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Alarm Options")
-
         val options = arrayOf("Stop Alarm", "Snooze")
-        
         builder.setSingleChoiceItems(options, -1) { dialog, which ->
             when (which) {
                 0 -> {
                     dialog.dismiss()
                     showPasswordDialog()
+                    stopFirebaseBpmListenerIfActive()
                 }
                 1 -> {
                     dialog.dismiss()
                     snoozeAlarm()
+                    stopFirebaseBpmListenerIfActive()
                 }
             }
         }
-
         builder.setNegativeButton("Cancel") { dialog, _ ->
             dialog.cancel()
         }
-
         builder.show()
     }
 
@@ -281,7 +412,6 @@ class MainActivity4 : AppCompatActivity() {
     }
 
     private fun showTimePickerDialog() {
-
         val calendar = Calendar.getInstance()
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
@@ -304,13 +434,35 @@ class MainActivity4 : AppCompatActivity() {
 
                 val chosenTime = String.format("%02d:%02d", hourOfDay, minute)
                 Toast.makeText(this, "Alarm set for $chosenTime", Toast.LENGTH_SHORT).show()
+
+                // Start Firebase BPM listener if Wearable is selected
+                val selectedDefense = lastLineOfDefenseSpinner.selectedItem.toString()
+                Log.d("FirebasePhone", "lastLineOfDefenseSpinner selected (time picker): $selectedDefense")
+                // Save last line of defense to SharedPreferences
+                val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                prefs.edit().putString("last_line_of_defense", selectedDefense).apply()
+                if (selectedDefense == "Wearable" && !isFirebaseBpmListenerActive) {
+                    Log.d("FirebasePhone", "Starting Firebase BPM listener for userId=$userId (time picker)")
+                    Toast.makeText(this, "Starting Firebase BPM listener", Toast.LENGTH_SHORT).show()
+                    try {
+                        Log.d("FirebasePhone", "Calling startFirebaseBpmListener in MainActivity4")
+                        WearableListenerService.startFirebaseBpmListener(userId, 100) {
+                            runOnUiThread {
+                                Toast.makeText(this, "BPM > 100 – alarma se oprește!", Toast.LENGTH_LONG).show()
+                                AlarmReceiver.stopAlarm()
+                                stopFirebaseBpmListenerIfActive()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebasePhone", "Exception when starting Firebase BPM listener", e)
+                    }
+                    isFirebaseBpmListenerActive = true
+                }
             },
             currentHour,
             currentMinute,
             true
         )
-
-
         timePickerDialog.show()
     }
 

@@ -11,6 +11,7 @@
     </string-array>
     <string-array name="spinner3">
         <item>Password</item>
+        <item>Wearable</item>
     </string-array>
     <string-array name="spinner4">
         <item>P</item>

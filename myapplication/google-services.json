@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "694795545726",
+    "project_id": "superalarm-e9b39",
+    "storage_bucket": "superalarm-e9b39.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694795545726:android:4b1bc53f34467b3a91bc2f",
+        "android_client_info": {
+          "package_name": "com.example.smamysuperalarm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4qnrprFMH6ZpI1exwqJD8Qbv03h08lOE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694795545726:android:c77dae7e6f99c85391bc2f",
+        "android_client_info": {
+          "package_name": "com.example.wearapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4qnrprFMH6ZpI1exwqJD8Qbv03h08lOE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
