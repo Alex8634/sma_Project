@@ -1,6 +1,5 @@
 package com.example.smamysuperalarm.activities
 
-//import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -28,11 +27,11 @@ class MainActivity1 : AppCompatActivity() {
         setContentView(R.layout.activity_main1)
         Log.d("MainActivity1", "onCreate started")
 
-        // Initialize Room database and repository
+        // Initialize Room database and repo
         val database = AppDatabase.getDatabase(applicationContext)
         userRepository = UserRepository(database.userDao())
 
-        // Initialize views
+        // Screen elements
         nameInput = findViewById(R.id.name_input)
         sleepHoursInput = findViewById(R.id.sleep_hours_input)
         codeInput = findViewById(R.id.work_type_input)
@@ -42,7 +41,7 @@ class MainActivity1 : AppCompatActivity() {
 
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val hasSeenWelcome = prefs.getBoolean("hasSeenWelcome", false)
-        //nu arata pagina 1 daca a fost vizitata deja
+        //it does not show the first page if has been visited(commented it for debug puropses)
         /*if (hasSeenWelcome) {
             startActivity(Intent(this, MainActivity2::class.java))
             finish()
@@ -57,7 +56,8 @@ class MainActivity1 : AppCompatActivity() {
             val code = codeInput.text.toString().trim()
             
             Log.d("MainActivity1", "Username: $username, Sleep Hours: $sleepHoursStr, Code: $code")
-            
+
+            // manages the "wrong" inputs
             if (username.isEmpty()) {
                 Log.d("MainActivity1", "Username is empty")
                 Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show()
@@ -83,13 +83,13 @@ class MainActivity1 : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Save user to Room database
+            // Save user to Room database and catch unfortunate errors
             lifecycleScope.launch {
                 try {
                     val user = User(username = username, password = code, sleepHours = sleepHours)
                     userRepository.insertUser(user)
                     
-                    // Save to SharedPreferences for backward compatibility
+                    //SharedPreferences for backward compatibility(in case Room fails)
                     prefs.edit().apply {
                         putString("alarm_code", code)
                         putString("username", username)
@@ -109,8 +109,6 @@ class MainActivity1 : AppCompatActivity() {
                 }
             }
         }
-        //enableEdgeToEdge()
-        // setContentView(R.layout.activity_main)
         
         Log.d("MainActivity1", "onCreate completed")
     }

@@ -35,7 +35,6 @@ class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         try {
-            // Acquire wake lock to keep the alarm playing
             val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
             wakeLock = powerManager.newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK,
@@ -44,7 +43,6 @@ class AlarmReceiver : BroadcastReceiver() {
                 acquire(10*60*1000L) // 10 minutes timeout
             }
 
-            // Get the alarm sound
             var alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         if (alarmUri == null) {
                 alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)

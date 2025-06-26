@@ -16,11 +16,10 @@ class MainActivity3 : AppCompatActivity() {
         binding3 = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding3.root)
 
-        // Get the saved username
+       // Get username from ShPref
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val username = prefs.getString("username", "User") ?: "User"
-        
-        // Update the greeting text
+
         binding3.greeting.text = "Hello, $username!"
 
         binding3.preferencesButton.setOnClickListener {

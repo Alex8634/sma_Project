@@ -17,18 +17,12 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-
         targetCircle = findViewById(R.id.target_circle)
-        
-        // Start the game
         startGame()
     }
 
     private fun startGame() {
-        // Make the circle move randomly
         moveCircle()
-        
-        // Set click listener for the circle
         targetCircle.setOnClickListener {
             score++
             if (score >= requiredScore) {
@@ -36,27 +30,20 @@ class GameActivity : AppCompatActivity() {
                 AlarmReceiver.stopAlarm()
                 finish()
             } else {
-                // Move the circle to a new position
                 moveCircle()
             }
         }
     }
-
+//move circle by XYaxis
     private fun moveCircle() {
-        // Get screen dimensions
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
         val screenHeight = displayMetrics.heightPixels
-
-        // Calculate random position
         val randomX = (0..(screenWidth - targetCircle.width)).random()
         val randomY = (0..(screenHeight - targetCircle.height)).random()
-
-        // Animate the circle to the new position
         val animator = ValueAnimator.ofFloat(0f, 1f)
         animator.duration = 500
         animator.interpolator = LinearInterpolator()
-        
         val startX = targetCircle.x
         val startY = targetCircle.y
         

@@ -131,22 +131,23 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
     }
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
-        Log.d("WearDebug", "PRIMIT mesaj de la ceas")
+        Log.d("WearDebug", "message from watch received")
 
         if (messageEvent.path == "/heart_rate") {
             val bpmStr = String(messageEvent.data, Charsets.UTF_8)
             val bpm = bpmStr.toIntOrNull()
-            Log.d("WearDebug", "BPM extras: $bpm")
+            Log.d("WearDebug", "current BPM: $bpm")
 
             if (bpm != null && bpm > 100) {
                 runOnUiThread {
-                    Toast.makeText(this, "BPM > 100 – alarma se oprește!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "BPM > 100 – SuperAlarma se opreste!", Toast.LENGTH_LONG).show()
                     AlarmReceiver.stopAlarm()
                 }
             }
         }
     }
 
+    //permission for watch usage
     override fun onRequestPermissionsResult(
         requestCode: Int, 
         permissions: Array<out String>, 
@@ -175,13 +176,7 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
             // Simulate receiving a high BPM message
             val testMessage = "105" // High BPM to trigger alarm stop
             Log.d("MainActivity4", "Testing wearable message: $testMessage")
-            
-            // Create a mock message event
-            // Note: This is just for testing - in real scenario, the message comes from the watch
             Toast.makeText(this, "Testing wearable message: $testMessage BPM", Toast.LENGTH_SHORT).show()
-            
-            // You can manually trigger the alarm stop for testing
-            //AlarmReceiver.stopAlarm()
         } else {
             Toast.makeText(this, "Please select 'Wearable' in the spinner first", Toast.LENGTH_SHORT).show()
         }
@@ -189,19 +184,19 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
 
     private fun scheduleDefaultSleepAlarm() {
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        val defaultSleepHours = prefs.getInt("sleep_hours", 8) // Default to 8 hours if not set
+        val defaultSleepHours = prefs.getInt("sleep_hours", 8) // Default to 8 normal hours if not set
         val selectedDefense = lastLineOfDefenseSpinner.selectedItem.toString()
         Log.d("FirebasePhone", "lastLineOfDefenseSpinner selected: $selectedDefense")
-        // Save last line of defense to SharedPreferences
         prefs.edit().putString("last_line_of_defense", selectedDefense).apply()
+
         // Calculate alarm time: current time + sleep hours
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.HOUR_OF_DAY, defaultSleepHours)
-        // Schedule the alarm
         scheduleAlarm(calendar.timeInMillis)
         val alarmTime = String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
         Toast.makeText(this, "Alarm set for $alarmTime (${defaultSleepHours} hours from now)", Toast.LENGTH_SHORT).show()
-        // Start Firebase BPM listener if Wearable is selected
+
+        // Start Firebase BPM listener if Wearable from spinner is selected
         if (selectedDefense == "Wearable" && !isFirebaseBpmListenerActive) {
             Log.d("FirebasePhone", "Starting Firebase BPM listener for userId=$userId")
             Toast.makeText(this, "Starting Firebase BPM listener", Toast.LENGTH_SHORT).show()
@@ -228,6 +223,7 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
         }
     }
 
+    //shoes avalaible options for alarm handling cancel/snooze
     private fun showAlarmOptionsDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Alarm Options")
@@ -252,37 +248,31 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
         builder.show()
     }
 
+    //snooze option
     private fun snoozeAlarm() {
-        // Get the selected snooze time from spinner
+        // Get snooze time from spinner
         val selectedSnoozeTime = snoozeTimeSpinner.selectedItem.toString().toInt()
         
         // Stop the current alarm
         AlarmReceiver.stopAlarm()
-        
-        // Show snooze confirmation with the selected time
         Toast.makeText(this, "Alarm snoozed for $selectedSnoozeTime minutes", Toast.LENGTH_SHORT).show()
-        
         // Cancel any existing snooze
         snoozeHandler?.removeCallbacks(snoozeRunnable!!)
-        
         // Create new snooze handler
         snoozeHandler = Handler(Looper.getMainLooper())
         snoozeRunnable = Runnable {
-            // Restart the alarm after the selected time
             val intent = Intent(this, AlarmReceiver::class.java)
             sendBroadcast(intent)
             Toast.makeText(this, "Snooze time is up!", Toast.LENGTH_SHORT).show()
         }
-        
         // Schedule the snooze with the selected time
-        snoozeHandler?.postDelayed(snoozeRunnable!!, (selectedSnoozeTime * 60 * 1000).toLong()) // Convert minutes to milliseconds
+        snoozeHandler?.postDelayed(snoozeRunnable!!, (selectedSnoozeTime * 60 * 1000).toLong())
     }
 
+    //Dialog with stop alarm options
     private fun showPasswordDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Last Line of Defense")
-
-        // Create options for the user
         val options = arrayOf("Password", "Puzzle", "Catch the Circle")
         
         builder.setSingleChoiceItems(options, -1) { dialog, which ->
@@ -305,10 +295,10 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
         builder.setNegativeButton("Cancel") { dialog, _ ->
             dialog.cancel()
         }
-
         builder.show()
     }
 
+    //stop alarm by PIN
     private fun showPasswordInput() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Enter Password to Stop Alarm")
@@ -337,18 +327,18 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
 
         builder.show()
     }
-
+    //2 types of questions: math and color theory
     private fun showPuzzle() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Solve the Puzzle to Stop Alarm")
 
-        // Randomly choose between math puzzle and word puzzle
+        // Randomly choose between puzzles
         val puzzleType = (0..1).random()
         
         if (puzzleType == 0) {
-            // Math puzzle
-            val num1 = (1..10).random()
-            val num2 = (1..10).random()
+            // Simple Math puzzle
+            val num1 = (10..30).random()
+            val num2 = (10..25).random()
             val answer = num1 + num2
 
             val input = EditText(this).apply {
@@ -369,7 +359,7 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
                 }
             }
         } else {
-            // Word puzzle
+            // color theory puzzle
             val wordPuzzles = listOf(
                 Pair("white + black", "gray"),
                 Pair("white + red", "pink"),
@@ -379,7 +369,6 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
             )
             
             val selectedPuzzle = wordPuzzles.random()
-            
             val input = EditText(this).apply {
                 hint = selectedPuzzle.first
             }
@@ -406,6 +395,7 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
         builder.show()
     }
 
+    //game puzzle
     private fun startGame() {
         val intent = Intent(this, GameActivity::class.java)
         startActivity(intent)
@@ -466,36 +456,6 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
         timePickerDialog.show()
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
-    /*private fun scheduleAlarm(secondsFromNow: Int) {
-        // Get the current time and add desired seconds to schedule the alarm
-        val calendar = Calendar.getInstance().apply {
-            add(Calendar.SECOND, secondsFromNow)
-        }
-        val triggerTimeMillis = calendar.timeInMillis
-
-        // Create an Intent pointing to the BroadcastReceiver
-        val intent = Intent(this, AlarmReceiver::class.java)
-
-        // Create the PendingIntent
-        pendingIntent = PendingIntent.getBroadcast(
-            this,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or
-                    (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
-        )
-
-        // Schedule the alarm
-        // For an exact alarm, use setExact(...) on Android versions that support it.
-        // If you need it to wake up the device, use RTC_WAKEUP or ELAPSED_REALTIME_WAKEUP.
-        if (alarmManager.canScheduleExactAlarms()) {
-            scheduleExactAlarm(triggerTimeMillis, pendingIntent)
-        }  else {
-        // Fallback for older versions (API < 31) — just schedule the alarm
-        scheduleExactAlarm(triggerTimeMillis, pendingIntent)
-        }
-    }*/
     private fun scheduleExactAlarm(triggerTimeMillis: Long, pendingIntent: PendingIntent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(
@@ -513,9 +473,7 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
     }
 
     private fun scheduleAlarm(triggerTimeMillis: Long) {
-        //val triggerTimeMillis = System.currentTimeMillis() + (secondsFromNow * 1000L)
         val intent = Intent(this, AlarmReceiver::class.java)
-
         val pendingIntent = PendingIntent.getBroadcast(
             this,
             0,
