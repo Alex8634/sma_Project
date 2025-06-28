@@ -67,7 +67,6 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
 
     implementation("com.google.firebase:firebase-database-ktx:21.0.0")
-    implementation("com.google.firebase:firebase-auth-ktx:22.0.0") // Optional
 }
 
 apply(plugin = "com.google.gms.google-services")

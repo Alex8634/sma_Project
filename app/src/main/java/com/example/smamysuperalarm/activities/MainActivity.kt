@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.smamysuperalarm.R
@@ -23,7 +22,6 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
 
     private lateinit var alarmManager: AlarmManager
-    //private lateinit var pendingIntent: PendingIntent
     private lateinit var setAlarmButton: Button
     private lateinit var stopAlarmButton: Button
     private var snoozeHandler: Handler? = null
@@ -38,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         setAlarmButton = findViewById(R.id.set_alarm_button)
         stopAlarmButton = findViewById(R.id.stop_alarm_button)
 
-    // functions caleled here
         setAlarmButton.setOnClickListener {
             showTimePickerDialog()
         }
@@ -74,16 +71,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun snoozeAlarm() {
-        // Stop the current alarm
         AlarmReceiver.stopAlarm()
-        
-        // Show snooze confirmation
         Toast.makeText(this, "Alarm snoozed for 2 minutes", Toast.LENGTH_SHORT).show()
-        
-        // Cancel any existing snooze
         snoozeHandler?.removeCallbacks(snoozeRunnable!!)
-        
-        // Create new snooze handler
         snoozeHandler = Handler(Looper.getMainLooper())
         snoozeRunnable = Runnable {
             // Restart the alarm after 2 minutes
@@ -91,8 +81,6 @@ class MainActivity : AppCompatActivity() {
             sendBroadcast(intent)
             Toast.makeText(this, "Snooze time is up!", Toast.LENGTH_SHORT).show()
         }
-        
-        // Schedule the snooze
         snoozeHandler?.postDelayed(snoozeRunnable!!, 2 * 60 * 1000) // 2 minutes in milliseconds
     }
 
@@ -115,8 +103,6 @@ class MainActivity : AppCompatActivity() {
                 if (calendar.timeInMillis <= System.currentTimeMillis()) {
                     calendar.add(Calendar.DAY_OF_YEAR, 1)
                 }
-
-
                 scheduleAlarm(calendar.timeInMillis)
 
                 val chosenTime = String.format(Locale.US,"%02d:%02d", hourOfDay, minute)
@@ -145,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                 triggerTimeMillis,
                 pendingIntent
             )
-        } else {//aici mi-a dat de furca Alarm Managerul
+        } else {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
                 triggerTimeMillis,

@@ -42,13 +42,12 @@ class AlarmReceiver : BroadcastReceiver() {
             ).apply {
                 acquire(10*60*1000L) // 10 minutes timeout
             }
-
             var alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         if (alarmUri == null) {
                 alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
 
-            // Create and configure the ringtone
+            // Create ringtone
         val ringtoneInstance = alarmUri?.let { RingtoneManager.getRingtone(context, it) }
         if (ringtoneInstance != null) {
                 // Configure audio attributes for better reliability
@@ -59,10 +58,7 @@ class AlarmReceiver : BroadcastReceiver() {
                         .build()
                 }
 
-                // Set looping to true to ensure continuous playback
                 ringtoneInstance.isLooping = true
-                
-                // Start playing
                 ringtoneInstance.play()
             ringtone = ringtoneInstance
                 

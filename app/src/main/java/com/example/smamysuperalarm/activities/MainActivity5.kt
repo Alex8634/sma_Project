@@ -38,18 +38,16 @@ class MainActivity5 : AppCompatActivity() {
             showChangePinDialog()
         }
 
-        // Load current sleep hours and set spinner
+        // Load current sleep hours and set spinner with defaultSTime
         loadCurrentSleepHours()
 
-        // Set up spinner change listener
+        // Set up spinner listener
         sleepHoursSpinner.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
                 val selectedHours = getHoursFromSpinnerSelection(position)
                 saveSleepHours(selectedHours)
             }
-
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {
-                // Do nothing
             }
         })
 
@@ -61,7 +59,8 @@ class MainActivity5 : AppCompatActivity() {
 
     private fun loadCurrentSleepHours() {
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        val currentSleepHours = prefs.getInt("sleep_hours", 8) // Default to 8 hours
+        //default set to 8 h
+        val currentSleepHours = prefs.getInt("sleep_hours", 8)
         
         // Set spinner to current value
         val spinnerPosition = getSpinnerPositionFromHours(currentSleepHours)
@@ -77,6 +76,7 @@ class MainActivity5 : AppCompatActivity() {
         }
     }
 
+    //defaultSTime
     private fun getSpinnerPositionFromHours(hours: Int): Int {
         return when (hours) {
             8 -> 0
@@ -86,6 +86,7 @@ class MainActivity5 : AppCompatActivity() {
         }
     }
 
+    //updates the defaultSTime preference
     private fun saveSleepHours(hours: Int) {
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val username = prefs.getString("username", "") ?: ""
@@ -101,7 +102,7 @@ class MainActivity5 : AppCompatActivity() {
                 }
             }
         } else {
-            // If no username found, just update SharedPreferences
+            // If no username found, just update SharedPreferences, the hour value is more important
             prefs.edit().putInt("sleep_hours", hours).apply()
             Toast.makeText(this, "Sleep hours updated to ${hours}H", Toast.LENGTH_SHORT).show()
         }
@@ -110,8 +111,6 @@ class MainActivity5 : AppCompatActivity() {
     private fun showChangePinDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Change PIN")
-
-        // Create input fields
         val input = EditText(this).apply {
             hint = "Enter new PIN"
             inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
@@ -141,14 +140,13 @@ class MainActivity5 : AppCompatActivity() {
                 return@setPositiveButton
             }
 
-            // Update PIN in database
+            // PIN update in room database
             lifecycleScope.launch {
                 try {
                     userRepository.updatePassword(username, newPin)
                     
-                    // Also update SharedPreferences for backward compatibility
+                    // Also update SharedPreferences in case smth happens
                     prefs.edit().putString("alarm_code", newPin).apply()
-                    
                     Toast.makeText(this@MainActivity5, "PIN changed successfully", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 } catch (e: Exception) {
@@ -156,7 +154,6 @@ class MainActivity5 : AppCompatActivity() {
                 }
             }
         }
-
         builder.setNegativeButton("Cancel") { dialog, _ ->
             dialog.cancel()
         }
