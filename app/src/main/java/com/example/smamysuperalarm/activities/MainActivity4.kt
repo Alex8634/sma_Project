@@ -47,6 +47,7 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
     private lateinit var enableDefaultSleepCheckbox: CheckBox
     private lateinit var lastLineOfDefenseSpinner: Spinner
     private var isFirebaseBpmListenerActive = false
+    private val userId = "basic"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
