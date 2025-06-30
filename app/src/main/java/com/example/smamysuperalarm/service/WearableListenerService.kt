@@ -14,15 +14,19 @@ class WearableListenerService : Service(), MessageClient.OnMessageReceivedListen
     companion object {
         private const val TAG = "WearableListenerService"
         private const val HEART_RATE_PATH = "/heart_rate"
-        private const val HEART_RATE_THRESHOLD = 100
+        private const val HEART_RATE_THRESHOLD = 120
+        private const val AVERAGE_BPM_THRESHOLD = 90
+        private const val BPM_ArraySize = 10
         private var firebaseListener: ValueEventListener? = null
         private var firebaseRef: DatabaseReference? = null
         private var isActive = false
+        private val bpmArr = mutableListOf<Int>()
         
         fun startListening(context: android.content.Context) {
             if (!isActive) {
                 Wearable.getMessageClient(context).addListener(WearableListenerService())
                 isActive = true
+                bpmArr.clear() // Clear history when starting
                 Log.d(TAG, "Started listening for wearable messages")
             }
         }
@@ -31,6 +35,7 @@ class WearableListenerService : Service(), MessageClient.OnMessageReceivedListen
             if (isActive) {
                 Wearable.getMessageClient(context).removeListener(WearableListenerService())
                 isActive = false
+                bpmArr.clear() // Clear history when stopping
                 Log.d(TAG, "Stopped listening for wearable messages")
             }
         }
@@ -44,6 +49,12 @@ class WearableListenerService : Service(), MessageClient.OnMessageReceivedListen
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val bpm = snapshot.getValue(Int::class.java) ?: return
                     Log.d("FirebasePhone", "BPM value from Firebase: $bpm")
+                    
+                    // Add to history and check average
+                    addBPMToArray(bpm)
+                    checkAvgOfbpms(stopAlarm)
+                    
+                    // Also check individual threshold
                     if (bpm > threshold) {
                         Log.d("FirebasePhone", "BPM $bpm > $threshold, stopping alarm")
                         stopAlarm()
@@ -60,6 +71,27 @@ class WearableListenerService : Service(), MessageClient.OnMessageReceivedListen
             firebaseListener?.let { firebaseRef?.removeEventListener(it) }
             firebaseListener = null
             firebaseRef = null
+            bpmArr.clear()
+        }
+        
+        private fun addBPMToArray(bpm: Int) {
+            bpmArr.add(bpm)
+            if (bpmArr.size > BPM_ArraySize) {
+                bpmArr.removeAt(0)
+            }
+            Log.d(TAG, "BPM history updated: $bpmArr (size: ${bpmArr.size})")
+        }
+        
+        private fun checkAvgOfbpms(stopAlarm: () -> Unit) {
+            if (bpmArr.size >= BPM_ArraySize) {
+                val average = bpmArr.average()
+                Log.d(TAG, "Average of last $BPM_ArraySize BPM readings: $average")
+                
+                if (average > AVERAGE_BPM_THRESHOLD) {
+                    Log.d(TAG, "Average BPM $average > $AVERAGE_BPM_THRESHOLD, stopping alarm")
+                    stopAlarm()
+                }
+            }
         }
     }
     
@@ -78,13 +110,14 @@ class WearableListenerService : Service(), MessageClient.OnMessageReceivedListen
         if (messageEvent.path == "/heart_rate") {
             val bpmStr = String(messageEvent.data)
             val bpm = bpmStr.toIntOrNull()
-            
-            Log.d(TAG, "Received BPM from Wear: $bpm")
-            
-            if (bpm != null && bpm > 100) {
-                Log.d(TAG, "BPM > 100, stopping alarm from wearable")
-                AlarmReceiver.stopAlarm()
-                // Note: We can't show Toast here since this is not in an Activity context
+            Log.d(TAG, "Received BPM: $bpm")
+            if (bpm != null) {
+                addBPMToArray(bpm)
+                checkAvgOfbpms { AlarmReceiver.stopAlarm() }
+                if (bpm > 120) {
+                    Log.d(TAG, "BPM > 120, stopping alarm")
+                    AlarmReceiver.stopAlarm()
+                }
             }
         }
     }

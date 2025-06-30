@@ -101,7 +101,6 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
                     return@setOnClickListener
                 }
             }
-            
             if (enableDefaultSleepCheckbox.isChecked) {
                 scheduleDefaultSleepAlarm()
             } else {
@@ -112,8 +111,6 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
         stopAlarmButton.setOnClickListener {
             showAlarmOptionsDialog()
         }
-
-        // Add test button for wearable communication
         findViewById<Button>(R.id.test_wearable_button).setOnClickListener {
             testWearableMessage()
         }
@@ -131,16 +128,15 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         Log.d("WearDebug", "message from watch received: ${messageEvent.path}")
-
         when (messageEvent.path) {
             "/heart_rate" -> {
                 val bpmStr = String(messageEvent.data, Charsets.UTF_8)
                 val bpm = bpmStr.toIntOrNull()
                 Log.d("WearDebug", "current BPM: $bpm")
 
-                if (bpm != null && bpm > 100) {
+                if (bpm != null && bpm > 120) {
                     runOnUiThread {
-                        Toast.makeText(this, "BPM > 100 – SuperAlarma se opreste!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "BPM > 120 – SuperAlarm has stopped!", Toast.LENGTH_LONG).show()
                         AlarmReceiver.stopAlarm()
                     }
                 }
@@ -182,7 +178,7 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
     fun testWearableMessage() {
         val selectedDefense = lastLineOfDefenseSpinner.selectedItem.toString()
         if (selectedDefense == "Wearable") {
-            // Check if wearable devices are actually connected
+            // Check if wearable device is connected
             checkWearableConnection()
         } else {
             Toast.makeText(this, "Please select 'Wearable' in the spinner first", Toast.LENGTH_SHORT).show()
@@ -232,9 +228,9 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
             Toast.makeText(this, "Starting Firebase BPM listener", Toast.LENGTH_SHORT).show()
             try {
                 Log.d("FirebasePhone", "Calling startFirebaseBpmListener in MainActivity4")
-                WearableListenerService.startFirebaseBpmListener(userId, 100) {
+                WearableListenerService.startFirebaseBpmListener(userId, 120) {
                     runOnUiThread {
-                        Toast.makeText(this, "BPM > 100 – alarma se oprește!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "BPM > 120 – alarma se oprește!", Toast.LENGTH_LONG).show()
                         AlarmReceiver.stopAlarm()
                         stopFirebaseBpmListenerIfActive()
                     }
@@ -411,7 +407,6 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
                 }
             }
         }
-
         builder.setNegativeButton("Cancel") { dialog, _ ->
             dialog.cancel()
         }
@@ -459,9 +454,9 @@ class MainActivity4 : AppCompatActivity(), OnMessageReceivedListener {
                     Toast.makeText(this, "Starting Firebase BPM listener", Toast.LENGTH_SHORT).show()
                     try {
                         Log.d("FirebasePhone", "Calling startFirebaseBpmListener in MainActivity4")
-                        WearableListenerService.startFirebaseBpmListener(userId, 100) {
+                        WearableListenerService.startFirebaseBpmListener(userId, 120) {
                             runOnUiThread {
-                                Toast.makeText(this, "BPM > 100 – alarma se oprește!", Toast.LENGTH_LONG).show()
+                                Toast.makeText(this, "BPM > 120 – alarma se oprește!", Toast.LENGTH_LONG).show()
                                 AlarmReceiver.stopAlarm()
                                 stopFirebaseBpmListenerIfActive()
                             }

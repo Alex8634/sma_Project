@@ -30,7 +30,7 @@ class MainActivityWearableWorks : Activity() {
         Log.d("WearTest", "FirebaseApp name: ${app.name}, options: ${app.options.toString()}")
         Log.d("WearTest", "FirebaseApp initialized")
 
-        setContentView(android.R.layout.simple_list_item_1) // Simplu, nu ne trebuie UI complex
+        setContentView(R.layout.activity_main_wearable_works)
 
         // Test message - send immediately to test communication
         sendMessageToPhone("105")
@@ -126,24 +126,24 @@ class MainActivityWearableWorks : Activity() {
                 val nodes = Tasks.await(Wearable.getNodeClient(this).connectedNodes)
                 Log.d("WearTest", "Found ${nodes.size} connected nodes")
 
-                for (node in nodes) {
+            for (node in nodes) {
                     Log.d("WearTest", "Trimit mesaj către ${node.displayName} (${node.id})")
-                    Wearable.getMessageClient(this)
-                        .sendMessage(node.id, "/heart_rate", message.toByteArray())
-                        .addOnSuccessListener {
+                Wearable.getMessageClient(this)
+                    .sendMessage(node.id, "/heart_rate", message.toByteArray())
+                    .addOnSuccessListener {
                             Log.d("WearTest", "Mesaj TRIMIS cu succes: $message către ${node.displayName}")
-                        }
-                        .addOnFailureListener {
+                    }
+                    .addOnFailureListener {
                             Log.e("WearTest", "Eroare la trimitere: ${it.message}")
                         }
                 }
 
                 if (nodes.isEmpty()) {
                     Log.w("WearTest", "No connected nodes found!")
-                }
+                    }
             } catch (e: Exception) {
                 Log.e("WearTest", "Error sending message: ${e.message}")
-            }
+        }
         }.start()
     }
 

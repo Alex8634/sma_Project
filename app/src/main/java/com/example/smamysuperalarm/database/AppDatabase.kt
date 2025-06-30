@@ -22,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "app_database"
                 )
-                .fallbackToDestructiveMigration() // This will recreate the database if schema changes
+                .fallbackToDestructiveMigration()
                 .build()
                 INSTANCE = instance
                 instance

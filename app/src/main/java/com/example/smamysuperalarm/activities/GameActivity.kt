@@ -52,7 +52,6 @@ class GameActivity : AppCompatActivity() {
             targetCircle.x = startX + (randomX - startX) * fraction
             targetCircle.y = startY + (randomY - startY) * fraction
         }
-        
         animator.start()
     }
 } 

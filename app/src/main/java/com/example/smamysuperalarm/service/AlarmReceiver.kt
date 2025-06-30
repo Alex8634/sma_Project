@@ -50,7 +50,7 @@ class AlarmReceiver : BroadcastReceiver() {
             // Create ringtone
         val ringtoneInstance = alarmUri?.let { RingtoneManager.getRingtone(context, it) }
         if (ringtoneInstance != null) {
-                // Configure audio attributes for better reliability
+            
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ringtoneInstance.audioAttributes = AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
@@ -68,7 +68,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 val lastLineOfDefense = prefs.getString("last_line_of_defense", "")
                 if (lastLineOfDefense == "Wearable") {
                     Log.d(TAG, "Attaching Firebase BPM listener from AlarmReceiver")
-                    WearableListenerService.startFirebaseBpmListener("testuser", 100) {
+                    WearableListenerService.startFirebaseBpmListener("testuser", 120) {
                         stopAlarm()
                     }
                 }

@@ -11,43 +11,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="28dp">
 
         <TextView
-            android:layout_marginTop="70dp"
             android:id="@+id/greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hello_alex"
-            android:textSize="18sp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginTop="70dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/hello_alex"
+            android:textSize="18sp" />
 
         <ImageView
-            android:layout_marginTop="30dp"
             android:id="@+id/dashboard_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="16dp"
             android:scaleType="centerCrop"
             android:src="@drawable/img1" />
 
         <TextView
-            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="How are we feeling today?"
-            android:textSize="18sp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
+            android:text="How are we feeling today?"
+            android:textSize="18sp" />
 
         <LinearLayout
-            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
-            android:layout_marginBottom="16dp">
+            android:orientation="horizontal">
 
 
             <Button
@@ -59,10 +61,10 @@
 
         <FrameLayout
             android:id="@+id/config"
-            android:layout_marginTop="30dp"
             android:layout_width="400dp"
             android:layout_height="100dp"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp">
 
             <ImageView
                 android:layout_width="339dp"
@@ -74,15 +76,15 @@
                 android:src="@drawable/img2" />
 
             <TextView
-                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Manage your Alarms!"
-                android:textSize="16sp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:background="@android:color/transparent"
+                android:text="Manage your Alarms!"
                 android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:background="@android:color/transparent" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </FrameLayout>
 
     </LinearLayout>
